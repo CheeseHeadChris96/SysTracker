@@ -10,7 +10,7 @@ sys.path.insert(0,str(root))
 p=argparse.ArgumentParser();p.add_argument('--parameters',required=True,type=Path);args=p.parse_args()
 values={k:v['value'] for k,v in json.loads(args.parameters.read_text())['parameters'].items()}
 runtime=urlparse(values['databaseUrl']);password=unquote(runtime.password)
-os.environ['DATABASE_URL']=f"mssql+pymssql://systracker_bootstrap:{quote(values['sqlAdminPassword'],safe='')}@{runtime.hostname}:1433/systracker"
+os.environ['DATABASE_URL']=f"mssql+pytds://systracker_bootstrap:{quote(values['sqlAdminPassword'],safe='')}@{runtime.hostname}:1433/systracker"
 os.environ['SECRET_KEY']=values['sessionSecret']
 # This tool only initializes schema and database authorization. Account email bootstrap runs in Azure.
 os.environ['APP_ENV']='development'

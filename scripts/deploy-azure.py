@@ -29,7 +29,7 @@ if not parameters.exists():
     app_password=secrets.token_urlsafe(36)
     values={'prefix':args.prefix,'location':args.region,'adminEmail':'administrator@hbstest.com',
         'sqlAdminPassword':secrets.token_urlsafe(36),'sessionSecret':secrets.token_hex(48),
-        'databaseUrl':f'mssql+pymssql://systracker_app:{quote(app_password,safe="")}@{args.prefix}-sql.database.windows.net:1433/systracker'}
+        'databaseUrl':f'mssql+pytds://systracker_app:{quote(app_password,safe="")}@{args.prefix}-sql.database.windows.net:1433/systracker'}
     fd=os.open(parameters,os.O_CREAT|os.O_EXCL|os.O_WRONLY,0o600)
     with os.fdopen(fd,'w') as f:json.dump({'$schema':'https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#','contentVersion':'1.0.0.0','parameters':{k:{'value':v} for k,v in values.items()}},f)
 print('Private deployment parameters retained in instance/deployment. Do not share or commit them.')

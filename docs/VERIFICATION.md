@@ -4,7 +4,7 @@ Verified locally on macOS during initial implementation:
 
 | Check | Result |
 |---|---|
-| Python security/inventory integration tests | 25 passed, including engineer assignments and access boundaries |
+| Python security/inventory integration tests | 26 passed, including engineer assignments, access boundaries, and SQL TLS configuration |
 | Update manifest verification checks | 5 passed: valid signature, tampering, unexpected host, HTTP, downgrade |
 | Windows .NET collector compilation | Passed |
 | Windows x64 self-contained publish | Passed; output in `dist/collector` |
@@ -21,7 +21,7 @@ Not verified or not performed:
 - Windows MSI installation, uninstall, service restart, DPAPI permissions, and upgrade rollback.
 - WiX packaging was attempted locally; WiX explicitly reports Windows-only support and cannot build the MSI reliably on this Mac. Installer source and the Windows build script are provided; no MSI is claimed as delivered.
 - Live customer Windows/Hyper-V, VMware, Veeam, or Palo Alto queries and minimum permissions.
-- Azure deployment, SQL dialect execution against Azure SQL, email delivery, certificate issuance, and backup restore.
+- Azure email delivery, custom-domain certificate issuance, and backup restore. Infrastructure provisioning and SQL schema initialization passed on September 22, 2026; application startup verification remains in progress.
 - Cloudflare DNS changes.
 - A signed collector release; update checks deliberately fail closed until a real release key is configured.
 - An independent security assessment or production load test.

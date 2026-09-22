@@ -47,9 +47,13 @@ def create_app(overrides=None):
         if not app.config['PUBLIC_URL'].startswith('https://'): raise RuntimeError('Production requires HTTPS PUBLIC_URL.')
         if app.config['SQLALCHEMY_DATABASE_URI'].startswith('sqlite:'): raise RuntimeError('Production requires a managed database.')
     if app.config['SQLALCHEMY_DATABASE_URI'].startswith('mssql+pymssql:'):
+        # Preserve existing connection strings while replacing the FreeTDS
+        # driver that rejects Azure's wildcard certificate.
+        app.config['SQLALCHEMY_DATABASE_URI']=app.config['SQLALCHEMY_DATABASE_URI'].replace('mssql+pymssql:', 'mssql+pytds:', 1)
+    if app.config['SQLALCHEMY_DATABASE_URI'].startswith('mssql+pytds:'):
         from sqlalchemy.pool import NullPool
-        os.environ['FREETDSCONF']=str(Path(__file__).resolve().parent/'freetds.conf')
-        app.config['SQLALCHEMY_ENGINE_OPTIONS']={'poolclass':NullPool,'connect_args':{'encryption':'require','login_timeout':30,'timeout':30}}
+        import certifi
+        app.config['SQLALCHEMY_ENGINE_OPTIONS']={'poolclass':NullPool,'connect_args':{'cafile':certifi.where(),'validate_host':True,'enc_login_only':False,'login_timeout':30,'timeout':30}}
     db.init_app(app)
     csrf.init_app(app)
 

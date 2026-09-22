@@ -1,6 +1,6 @@
 # Azure pilot deployment
 
-No Azure resources or Cloudflare records have been created. Local template compilation does not establish regional SKU availability, subscription eligibility, RBAC rights, DNS ownership, or real email delivery.
+The pilot infrastructure and spending alerts were provisioned on September 22, 2026. Azure SQL initialization succeeded with the free allowance and AutoPause enabled. DNS, email verification, and application startup validation are still pending.
 
 ## Planned resources and cost controls
 
@@ -98,3 +98,7 @@ No signing private key is present in the dashboard, update server, or collector.
 - Use the GUI to create the pilot customer manually and enroll its collector. Enter customer collection credentials locally only.
 
 Initial external prerequisites remaining: authenticated Azure access/subscription selection, Cloudflare changes, email verification, a Windows pilot machine, and a release-signing identity. None are replaced by local test success.
+
+## SQL driver compatibility
+
+The pilot uses python-tds with an explicit CA bundle, hostname validation, and full-session TLS encryption. The initial pymssql/FreeTDS build rejected the Azure wildcard certificate; certificate checks were not disabled. Existing `mssql+pymssql` connection strings are translated to the new driver by the application without changing credentials. pyOpenSSL is pinned to the API supported by python-tds; validate compatibility before upgrading it.
