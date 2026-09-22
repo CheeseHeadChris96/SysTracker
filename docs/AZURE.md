@@ -1,6 +1,6 @@
 # Azure pilot deployment
 
-The pilot infrastructure and spending alerts were provisioned on September 22, 2026. Azure SQL initialization and restricted runtime-account verification succeeded with the free allowance and AutoPause enabled. The dashboard responds successfully at its Azure hostname's health endpoint, and the separate update service is running. Custom DNS, certificates, email verification, and end-to-end production sign-in remain pending.
+The pilot infrastructure and spending alerts were provisioned on September 22, 2026. Azure SQL initialization and restricted runtime-account verification succeeded with the free allowance and AutoPause enabled. The dashboard responds successfully at its Azure hostname's health endpoint, and the separate update service is running. Cloudflare DNS and managed HTTPS certificates are configured for systracker.hbstest.com, ingest.hbstest.com, and updates.hbstest.com. Domain, SPF, and both DKIM checks passed; the email domain is linked and the SysTracker sender is configured. Azure Email accepted the first administrator setup invitation. Inbox receipt and end-to-end production sign-in remain to be confirmed by the administrator.
 
 ## Planned resources and cost controls
 
@@ -60,7 +60,7 @@ Add the custom domains in each App Service and create/bind free managed certific
 
 ## 4. Configure account email
 
-In the created Email Communication Service, open the `hbstest.com` custom domain. Copy its exact verification, SPF, and DKIM records into Cloudflare. Merge SPF requirements into any existing SPF record; do not create a second SPF record or replace Microsoft 365's settings. Do not change existing MX records.
+In the created Email Communication Service, open the `hbstest.com` custom domain. Copy its exact verification, SPF, and DKIM records into Cloudflare. Merge SPF requirements into any existing SPF record; do not create a second SPF record or remove Microsoft 365's include. Azure requires a `-all` ending. Review any change from `~all` with the domain owner because it changes treatment of unlisted senders. The pilot owner approved that change on September 22, 2026. Do not change existing MX records.
 
 Complete verification, link the verified domain to the dedicated Communication Service, and configure the `systracker` sender username. The application reads that dedicated service's connection string through Key Vault. It has no Azure management role on ACS. Test delivery to `administrator@hbstest.com`, including spam handling and resend limits, before inviting engineers.
 
@@ -97,7 +97,7 @@ No signing private key is present in the dashboard, update server, or collector.
 - Review logging, email quotas, billing alerts, and the actual monthly estimate. Do not enable request-body capture or SQL parameter logging.
 - Use the GUI to create the pilot customer manually and enroll its collector. Enter customer collection credentials locally only.
 
-External prerequisites remaining: Cloudflare changes, email verification, a Windows pilot machine, and a release-signing identity. Azure authentication, subscription selection, infrastructure provisioning, and SQL initialization are complete. None of the remaining checks are replaced by local test success.
+External prerequisites remaining: administrator account setup, a Windows pilot machine, and a release-signing identity. Azure authentication, subscription selection, infrastructure provisioning, SQL initialization, DNS, managed HTTPS, and email-domain verification are complete. None of the remaining checks are replaced by local test success.
 
 ## SQL driver compatibility
 

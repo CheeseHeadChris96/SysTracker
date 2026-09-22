@@ -25,14 +25,18 @@ Azure pilot checks on September 22, 2026:
 - The dashboard's Azure HTTPS `/health` endpoint returned `{"status":"ok"}`. This checks startup, not end-to-end production sign-in.
 - The separate update service started successfully and returns HTTP 404 for the unpublished release manifest, as expected.
 
+- Nine Cloudflare DNS records were imported; the existing SPF ending changed to `-all` with explicit owner approval. Microsoft 365 records were preserved.
+- Managed certificates were issued and bound for dashboard, ingest, and updates hostnames. HTTPS requests validated the certificates; dashboard `/` and `/health` returned 200, ingest `/` returned 404, and the unpublished update manifest returned 404.
+- The production sign-in page rendered in the browser.
+- Azure verified Domain, SPF, DKIM, and DKIM2. The domain is linked and sender `systracker@hbstest.com` is configured. Azure Email accepted the initial production administrator invitation; the temporary bootstrap firewall rule was removed.
+
 Not verified or not performed:
 
 - Windows MSI installation, uninstall, service restart, DPAPI permissions, and upgrade rollback.
 - WiX packaging was attempted locally; WiX explicitly reports Windows-only support and cannot build the MSI reliably on this Mac. Installer source and the Windows build script are provided; no MSI is claimed as delivered.
 - Live customer Windows/Hyper-V, VMware, Veeam, or Palo Alto queries and minimum permissions.
-- Azure email delivery, custom-domain certificate issuance, end-to-end production sign-in, and backup restore. Infrastructure provisioning, SQL schema initialization, restricted SQL login, and application startup passed on September 22, 2026.
-- Cloudflare DNS changes.
+- Administrator inbox receipt, end-to-end production sign-in, and backup restore. Infrastructure provisioning, SQL schema initialization, restricted SQL login, and application startup passed on September 22, 2026.
 - A signed collector release; update checks deliberately fail closed until a real release key is configured.
 - An independent security assessment or production load test.
 
-No real customer has been enrolled. No email has been sent to `administrator@hbstest.com`; its development invitation is in the local outbox. The approved Azure pilot resources have been provisioned, including a billable B1 App Service plan and a $25 monthly budget alert. Budget alerts do not stop spending.
+No real customer has been enrolled. Azure Email accepted a production setup invitation to `administrator@hbstest.com`; inbox receipt has not yet been confirmed. The approved Azure pilot resources have been provisioned, including a billable B1 App Service plan and a $25 monthly budget alert. Budget alerts do not stop spending.
