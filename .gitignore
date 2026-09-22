@@ -1,0 +1,16 @@
+.venv/
+__pycache__/
+.pytest_cache/
+instance/
+.env
+.env.*
+!.env.example
+*.pfx
+*.p12
+*.key
+*private*.pem
+*.db
+bin/
+obj/
+dist/
+.DS_Store
