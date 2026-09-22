@@ -1,0 +1,26 @@
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs" xmlns:util="http://wixtoolset.org/schemas/v4/wxs/util">
+  <Package Name="SysTracker Collector" Manufacturer="HBS" Version="$(Version)" UpgradeCode="c5a5dab2-048a-4e26-a657-7a5775342233" Scope="perMachine">
+    <MajorUpgrade DowngradeErrorMessage="A newer SysTracker Collector is already installed." Schedule="afterInstallInitialize" />
+    <MediaTemplate EmbedCab="yes" />
+    <StandardDirectory Id="ProgramFiles64Folder"><Directory Id="INSTALLFOLDER" Name="SysTracker Collector">
+      <Component Id="ServiceComponent" Guid="b9e1e747-1776-477b-adb1-48e14fca2210">
+        <File Id="CollectorExe" Source="$(PublishDir)\SysTracker.Collector.exe" KeyPath="yes" />
+        <ServiceInstall Id="InstallService" Name="SysTrackerCollector" DisplayName="SysTracker Collector" Description="Collects local inventory and reports outbound to SysTracker." Type="ownProcess" Start="auto" ErrorControl="normal" Account="LocalSystem" Arguments="--service" />
+        <ServiceControl Id="ControlService" Name="SysTrackerCollector" Start="install" Stop="both" Remove="uninstall" Wait="yes" />
+      </Component>
+    </Directory></StandardDirectory>
+    <StandardDirectory Id="ProgramMenuFolder"><Directory Id="MenuDir" Name="SysTracker">
+      <Component Id="MenuComponent" Guid="f4cd5730-0af1-4721-95a3-a22b6235a100">
+        <Shortcut Id="CollectorShortcut" Name="SysTracker Collector" Target="[#CollectorExe]" WorkingDirectory="INSTALLFOLDER" />
+        <RemoveFolder Id="RemoveMenu" On="uninstall" />
+        <RegistryValue Root="HKLM" Key="Software\HBS\SysTracker" Name="Installed" Type="integer" Value="1" KeyPath="yes" />
+      </Component>
+    </Directory></StandardDirectory>
+    <Property Id="ARPNOREPAIR" Value="1" />
+    <Property Id="ARPNOMODIFY" Value="1" />
+    <CustomAction Id="PurgeLocalData" FileRef="CollectorExe" ExeCommand="--purge" Execute="deferred" Impersonate="no" Return="check" />
+    <InstallExecuteSequence><Custom Action="PurgeLocalData" After="StopServices" Condition="REMOVE~=&quot;ALL&quot; AND NOT UPGRADINGPRODUCTCODE" /></InstallExecuteSequence>
+    <Feature Id="Main" Title="SysTracker Collector" Level="1"><ComponentRef Id="ServiceComponent" /><ComponentRef Id="MenuComponent" /><ComponentGroupRef Id="HarvestedFiles" /></Feature>
+  </Package>
+  <Fragment><ComponentGroup Id="HarvestedFiles"><Files Directory="INSTALLFOLDER" Include="$(PublishDir)\**"><Exclude Files="$(PublishDir)\SysTracker.Collector.exe" /></Files></ComponentGroup></Fragment>
+</Wix>
