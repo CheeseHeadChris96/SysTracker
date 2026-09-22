@@ -1,6 +1,6 @@
 # Azure pilot deployment
 
-The pilot infrastructure and spending alerts were provisioned on September 22, 2026. Azure SQL initialization succeeded with the free allowance and AutoPause enabled. DNS, email verification, and application startup validation are still pending.
+The pilot infrastructure and spending alerts were provisioned on September 22, 2026. Azure SQL initialization and restricted runtime-account verification succeeded with the free allowance and AutoPause enabled. The dashboard responds successfully at its Azure hostname's health endpoint, and the separate update service is running. Custom DNS, certificates, email verification, and end-to-end production sign-in remain pending.
 
 ## Planned resources and cost controls
 
@@ -68,7 +68,7 @@ Complete verification, link the verified domain to the dedicated Communication S
 
 ```sh
 python scripts/package-web.py
-az webapp deploy --resource-group YOUR_PREFIX-systracker --name YOUR_PREFIX-web --src-path dist/web.zip --type zip
+az webapp deploy --resource-group YOUR_PREFIX-systracker --name YOUR_PREFIX-web --src-path dist/web.zip --type zip --async true
 ```
 
 Use Azure CLI's authenticated deployment; basic SCM and FTP credentials are disabled. The package installs pinned requirements and runs `startup.sh` under Gunicorn. If deployment doesn't support this authentication mode in your CLI version, update the CLI; do not enable basic publishing authentication as a shortcut.
@@ -97,7 +97,7 @@ No signing private key is present in the dashboard, update server, or collector.
 - Review logging, email quotas, billing alerts, and the actual monthly estimate. Do not enable request-body capture or SQL parameter logging.
 - Use the GUI to create the pilot customer manually and enroll its collector. Enter customer collection credentials locally only.
 
-Initial external prerequisites remaining: authenticated Azure access/subscription selection, Cloudflare changes, email verification, a Windows pilot machine, and a release-signing identity. None are replaced by local test success.
+External prerequisites remaining: Cloudflare changes, email verification, a Windows pilot machine, and a release-signing identity. Azure authentication, subscription selection, infrastructure provisioning, and SQL initialization are complete. None of the remaining checks are replaced by local test success.
 
 ## SQL driver compatibility
 

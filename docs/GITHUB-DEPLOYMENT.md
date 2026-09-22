@@ -19,6 +19,8 @@ Once enabled, merging tested changes into `main` deploys the dashboard automatic
 
 The health check verifies that the application responds; it does not verify SQL access, email delivery, or the deployed commit identity. First-production acceptance must include sign-in and customer inventory checks.
 
+Deployment uses Azure CLI's asynchronous upload mode so the server-side dependency build can finish without a long upload request timing out. The CLI tracks deployment startup before the health check runs. If an upload reports a gateway timeout, inspect the Azure deployment status before submitting another package; the build may still be running.
+
 ## Database changes and rollback
 
 Automatic application deployment is prepared, but production schema migrations are not yet automated. Before enabling production auto-deploy, introduce and test versioned migrations against Azure SQL and verify a restore. Do not run `init-db` automatically on every application restart: it only creates missing tables and cannot upgrade existing columns.
